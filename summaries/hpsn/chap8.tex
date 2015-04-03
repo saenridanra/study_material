@@ -1,0 +1,43 @@
+\chapter{Exact-Match Lookups} \label{CHAP:EXMATCH}
+
+What is an exaxt-match lookup?
+\begin{itemize}
+\item simplest form of database query
+\item set of tubles: key K and state information
+\item can use binary search and hash tables
+\end{itemize}
+\textbf{Ethernet under fire}
+\\
+\\
+They are still interesting for this topic because different to the "usual" algorithmic setting, because they need to finish the search in time to receive a packet, they use memory references as a measure of speed and the potential use of hardware speedups. They are also important for bridging.\\
+\\
+Bridges were designed to "extend" a single Ethernet. They would work with the data link layer, which contains a 48-bit unique Ethernet destination address.\\
+\\
+The path to the final resolution:
+\begin{itemize}
+\item \textbf{Packet Repeater:} picks up entire packets, buffers them and sends them to the other Ethernet port. Distance span is increased to 3km but bandwidth doesn't change.
+\item \textbf{Filtering Repeater:} Repeater has a table that maps station addresses to Ethernets. Only packets which need repeating are repeated. If a fraction p of the traffic has a destination on the same Ethernet, the bandwidth (1+p) and distance increases. Only problem is building the table.
+\item \textbf{Filtering Repeater with Learning:} The bridge also looks on the source address and starts building it's mapping table.
+\end{itemize}
+\textbf{Wire Speed Forwarding}
+\\
+Problem with the last idea is, that if the bridge takes more time to analyze a packet (check the mapping table), than to receive a packet, some packets may be discarded since the buffer is full. Thus an implementation with wire speed forwarding was proposed.\\
+\\
+The bridge only had 51.2 $\mu $sec to forward a packet. This means both lookups (destination for forwarding and source for learning) had to be done within 25.6 $\mu $sec. The first design consisted f a processor, two Ethernet chips, a lookup chip and a four-ported memory, which could be read and written by the processor, the Ethernet chips and the lookup engine.\\
+\\
+The design worked with:
+\begin{itemize}
+\item \textbf{Architectural Design}: Memory was cheap DRAM with a cycle time of 100 nsec. It was designed to maximize parallelism and minimize interference so the processor can still work, while the lookup engine worked.
+\item \textbf{Data Copying}: The Ethernet chips used DMA to place packets in the memory without processor control. Later only a pointer needed to be flipped to change a packet from receive to transmit queue.
+\item \textbf{Control Overhead}: To minimize overhead the processor used polling, staying in a loop after a packet interrupt. Whe  the receive queues are empty the processor does other chores.
+\item \textbf{Lookups}: Used binary search but software lookup exceeded 25.6 $\mu $sec. Added hardware with combinatorial logic made it possible to use a mapping table of 8000 entries within a lookup time of 1.3 $\mu $sec.
+\end{itemize}
+\textbf{Scaling Lookups to Higher Speeds}\\
+\\
+The popularity of bridges led to an increase of the lookup table from 8K entries to 64K entries. This means binary search would need 16 memory access which would take 3.2 $\mu $sec with DRAM. for 40 byte packets this would be too slow.\\
+\\
+One alternative would be to use SRAM, which is 5-10 times faster than DRAM. But this was expensive and would not work for the next speed increment.\\
+\\
+So \textit{Scaling via Hashing} was the solution. The idea of the Gigaswitch was used to design a FDDI-to-Gigaswitch network controller. It used perfect hashing. With a parameterized hash function it was possible to have only four memory access in the worst case within the 64K lookup table.\\
+\\
+An alternative approach was \textit{Hardware Parallelism}. It pipelines the binary search to increase the lookup throughput. 

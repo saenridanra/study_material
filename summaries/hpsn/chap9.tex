@@ -1,0 +1,35 @@
+\chapter{Prefix-Match Lookups} \label{CHAP:PREFMATCH}
+
+For Prefix-Match Lookups bits are used. The 116-bit IP prefix 132.239 would be 1000010011101111* for example. Another denotation would be 123.239.0.0/16 which shows only the first 16 bits are relevant. The third notation uses a mask. 132.239.0.0 with a mask of 255.255.0.0 shows again that only the first 16 bits matter since 255.255.0.0 only has 1's in the first 16 bits.
+
+\textbf{Why Variable-Length Prefixes}
+
+In general: They make more use of the address space.\\
+\\
+In specific: The internet began with a hierarchy in which 32-bit addresses were divided into a network address and a host number. This lead to a classification (Class A: 8 bits, Class B: 16 bits, Class C: 24 bits) of the address space. In today's world small companies may be only given a small part of a Class C address, maybe a /30, which lead to schemes like network address translation (NAT)
+
+\textbf{Lookup Model}
+
+Observations:
+\begin{itemize}
+\item \textbf{1}: Caching solutions won't work because of the large number of flows.
+\item \textbf{2}: Lookup needs to be done at wire speed, since many packets are minimum-sized.
+\item \textbf{3}: Measure of speed is worst case of memory accesses.
+\item \textbf{4}: Naive schemes will require 24 memory accesses in worst case since prefix lengths wary from 8 to 32.
+\item \textbf{5}: Future backbone routers will have prefix databases of 500,000 to 1 million prefixes.
+\item \textbf{6}: Unstable routing-protocol implementations may lead to updates of the lookup table in the order of miliseconds. This is several orders of magnitude below lookup requirements, allowing a more complex updating in order to speed up lookup.
+\item \textbf{7}: Another metric is memory usage (DRAM vs SRAM)
+\item \textbf{8}: At the time of writing 32-bit IP addresses were the most interesting
+\end{itemize}
+
+\textbf{Finessing Lookups}
+
+\textbf{Threaded Indices and Tag Switching}
+
+With this method every packet gets information of the next routing table in it's header. This means lookup take only one memory access, No Prefix-matching is necessary since the position of the entry for the next hop is already known through the information in the header.
+
+This means the routers need to precompute the routing tables every time the topology changes and send their distance and index for every of their neighbours to all of their neighbours.
+
+\textbf{Flow Switching}
+
+Flow Switching also works with passing an index to the next hop, but different to Tag Switching it is computed on demand. The "second" router decides to switch packets if it notices a lot of traffic. It sends an idle virtual circuit identifier to the "first" router and maps this identifier to the outgoing port. Now every packet which comes from the "first" router and is labelled with this identifier will be send to the right port without the need of a lookup.

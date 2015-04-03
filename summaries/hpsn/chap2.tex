@@ -1,0 +1,244 @@
+\chapter{Micro-Optimization} \label{CHAP:MOPT}
+
+\section{Counting bits}
+
+\textbf{Question 1:} How many bits are set to one?
+
+\textbf{Solution 1.1:} Simple approach 
+
+Walk through every bit, if bit is one increase counter.
+
+\begin{lstlisting}[language=C]
+#define MAXBITS 32
+
+int countBits(unsigned int x) { 
+  int bits = 0; 
+  for (int i = 0; i < MAXBITS; i++) { 
+    if (((1<<i) & x) != 0) bits++; 
+  } 
+  return bits; 
+}
+\end{lstlisting}
+
+\textit{Improvements:}
+
+\begin{itemize}
+\item Loop reversal
+\begin{lstlisting}[language=C]
+for (int i = MAXBITS-1; i>=0; i--)
+\end{lstlisting}
+
+\item Condition to computation
+\begin{lstlisting}[language=C]
+bits += (x >> i) & 1; 
+\end{lstlisting}
+
+\item Index removal
+\begin{lstlisting}[language=C]
+bits += (x & 1); 
+x >>= 1; 
+\end{lstlisting}
+
+\item Loop inversion
+
+\item Delay slot
+
+\item Loop unrolling
+\end{itemize}
+
+
+
+
+
+\textbf{Solution 1.2:} Kerninghan bit clearing
+
+\begin{lstlisting}[language=C]
+int countBits(unsigned int x) { 
+  int bits = 0; 
+  while (x != 0) { 
+    x = x & (x-1); 
+    bits++; 
+  } 
+  return bits; 
+}
+\end{lstlisting}
+
+\textbf{Solution 1.3:} Magic
+
+\begin{lstlisting}[language=C]
+int countBits(unsigned int x) { 
+  return ((x * 0x000200040008001ULL) & 0x111111111111111ULL) % 0xf; 
+}
+\end{lstlisting}
+
+
+
+\textbf{Question 2:} Is the number of bits set odd?
+
+\textbf{Solution 2.1:} Halve \& Remove pairs
+\begin{lstlisting}[language=C]
+int bitCountIsOdd(unsigned int x) { 
+  x ^= x >> 16; 
+  x ^= x >> 8; 
+  x ^= x >> 4; 
+  x ^= x >> 2; 
+  x ^= x >> 1; 
+  return x & 1; 
+}
+\end{lstlisting}
+
+\textbf{Solution 2.2:} Lookup table
+
+Tradeoff between operation minimization and table size.
+\begin{lstlisting}[language=C]
+int bitCountIsOdd(unsigned int x) { 
+  static unsigned char parity[] = { 
+    0,1,1,0, 1,0,0,1, 
+    1,0,0,1, 0,1,1,0 }; 
+  x ^= x >> 16; 
+  x ^= x >> 8; 
+  x ^= x >> 4; 
+  x &= 0xf; 
+  return parity[x]; 
+}
+\end{lstlisting}
+
+\textit{Improvement:} Inline bitmap
+\begin{lstlisting}[language=C]
+return (0x6996 >> x) & 1; 
+\end{lstlisting}
+
+
+
+
+
+\section{Block Parity}
+
+Given n blocks of size SIZE each: Calculate block $n+1$ (d) such that every bit is the XOR of the matching bits in the other blocks.
+
+\begin{lstlisting}[language=C]
+#define SIZE 512
+
+void blockParity(char *d, char **s, int n) { 
+  for (int i = 0; i < SIZE; i++)
+    d[i] = 0; 
+  
+  for (int j = 0; j < n; j++) { 
+    for (int i = 0; i < SIZE; i++) {
+      //Calculate block by block
+      d[i] ^= s[j][i]; 
+    }
+  } 
+}
+\end{lstlisting}
+
+\textit{Improvements:}
+\begin{itemize}
+\item Words\footnote{''A word is basically a fixed-sized group of digits that are handled as a unit by the instruction set or the hardware of the processor.'' (wikipedia)}
+\item loop reversal
+\item loop interchange
+\item register (skip initialization)
+\end{itemize}
+
+\begin{lstlisting}[language=C]
+#define WORDS 128
+
+void blockParity(int *d, int **s, int n) { 
+  for (int i = WORDS-1; i >= 0; i--) { 
+    int t = s[0][i] ^ s[1][i];
+    
+    for (int j = 2; j < n; j++) {
+      // Calculate bit by bit
+      t ^= s[j][i]; 
+    }
+    
+    d[i] = t; 
+  } 
+}
+\end{lstlisting}
+
+\textit{Further improvements:}
+
+\begin{itemize}
+\item Loop unrolling
+\item Loop specialization
+\end{itemize}
+
+\begin{lstlisting}[language=C]
+#define WORDS 128 
+
+void blockParity(int *d, int **s, int n) { 
+  switch (n) { 
+    case 2: for (int i = WORDS-2; i>=0; i -= 2) 
+              d[i] = s[0][i] ^ s[1][i];
+              d[i+1] = s[0][i+1] ^ s[1][i+1]; 
+            break; 
+    case 3: for (int i = WORDS-2; i>=0; i -= 2) 
+              d[i] = s[0][i] ^ s[1][i] ^ s[2][i];
+              d[i+1] = s[0][i+1] ^ s[1][i+1] ^ s[2][i+1]; 
+            break; 
+    case ...
+  } 
+}
+\end{lstlisting}
+
+\begin{shadedSmaller}
+\textbf{Summary:} Loop optimizations
+
+\begin{description}
+\item[loop reversal] \lstinline|i++ --> i--|
+\item[index removal] \lstinline|p[i] --> p++|
+\item[loop inversion] \lstinline|while --> do-while|
+\item[loop unrolling] \lstinline|for(;;) x --> x;x;x;...|
+\item[loop interchange] \lstinline|for(i;;) for(j;;) --> for(j;;) for(i;;)|
+\item[loop unswitching] \lstinline|for(;;) if --> if for(;;) else for(;;)|
+\end{description}
+\end{shadedSmaller}
+
+\begin{shadedSmaller}
+\textbf{Summary:} Generic optimizations
+
+\begin{description}
+\item[condition to computation] \lstinline|if() x=... -> x=x+y| 
+\item[lookup table] \lstinline|t[x]|
+\item[inline bitmap] \lstinline|(t >> x) & mask|
+\item[software pipelining] Group independent tasks, so that a processor with multiple instruction units can execute them in parallel. Do not confuse with hardware/processor pipelining. \lstinline|A(1)B(1)A(2)B(2) --> A(1)A(2)B(1)B(2)|
+\item[instruction sharing] reuse instructions (e.g. by jump label)
+\item[function call inlining] Replace function call with function body
+\item[register usage] 
+\end{description}
+\end{shadedSmaller}
+
+\textbf{int64x4 vs. int64x8} ???
+
+\textbf{int64x4 vs. sse2x4} The int64 algorithms are cache-polluting\footnote{''Cache pollution describes situations where an executing computer program loads data into CPU cache unnecessarily.'' (wikipedia)}. This makes them slightly faster, but slowing the rest of the machine down. 
+
+
+
+
+\section{One's complement checksum}
+
+Used in IPv4 to calculate the header checksum.
+
+\textit{Algorithm:} 
+\begin{enumerate}
+\item Add the first two 16-bit values
+\item\label{carry} Add carry bit to result
+\item Add the next 16-bit value
+\item Go to \ref{carry}, until all values are added
+\item Take one's complement (invert all bits)
+\end{enumerate}
+
+\section{Coffee shop}
+
+Error-handling strategies for loosely coupled systems:
+
+\begin{description}
+\item[Write-off] Do nothing, or discard what you've done.
+
+\item[Retry] Retry the one that failed.
+
+\item[Compensating action] Undo the one that failed
+
+\item[Transaction coordinator] Coordinator prepares action and commit only if both systems are ready.
+\end{description}

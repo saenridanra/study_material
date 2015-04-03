@@ -1,0 +1,481 @@
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%% Übungsblattvorlage					  %
+%%% written by Andreas Rain				  %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+
+\documentclass[fleqn, oneside, 10pt, titlepage]{article}
+%
+%Zeichensatz UTF-8 und T1-Zeichensatz
+\usepackage[utf8x]{inputenc} 
+\usepackage[T1]{fontenc}
+%\newcommand{\changefont}[3]{\fontfamily{#1}\fontseries{#2}\fontshape{#3}\selectfont}
+% 
+
+%Silbentrennung nach neuer deutscher Rechtschreibung
+\usepackage[ngerman]{babel} % Neue Rechtschreibung
+%
+%Einige Mathe-Symbole aus AMS-LaTeX
+\usepackage{amsmath,amssymb,euscript}
+%
+% schönere Aufzählungen
+\usepackage{enumerate}
+%
+% Für Bilder 
+\usepackage{graphicx}
+\usepackage{float} % lädt das Paket zur Verwendung von zusätzlichen Positionsbefehlen
+
+%Graue box
+\usepackage{framed}
+\usepackage{xcolor}
+
+\definecolor{MyBoxColor}{rgb}{0.9,0.9,0.9}
+\newenvironment{shadedSmaller}{
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{MyBoxColor}}
+  \MakeFramed {\advance\hsize-2\width\FrameRestore}}
+{\endMakeFramed}
+
+\newenvironment{shadedSmallerPadding}{
+  \def\FrameCommand{\fboxsep=0.3cm \colorbox{MyBoxColor}}
+  \MakeFramed {\advance\hsize-1.1\width\FrameRestore}}
+{\endMakeFramed}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Standard Font auf Überschriften übernehmen.
+%\usepackage{sectsty}
+%\sectionfont{\fontfamily{pag}\fontseries{b}\fontsize{13pt}{20pt}\selectfont}
+%\subsectionfont{\fontfamily{pag}\fontseries{b}\fontsize{11pt}{20pt}\selectfont}
+%\subsubsectionfont{\fontfamily{pag}\fontseries{b}\fontsize{10pt}{20pt}\selectfont}
+%\paragraphfont{\fontfamily{pag}\fontseries{b}\fontsize{11pt}{20pt}\selectfont}
+%\subparagraphfont{\fontfamily{pag}\fontseries{b}\fontsize{10pt}{20pt}\selectfont}
+
+%
+% Farben und die Code-Umgebung einbinden
+%
+\usepackage{listings, color}
+%
+% Ein paar Standardfarben
+\definecolor{darkblue}{rgb}{0,0,.6}
+\definecolor{darkred}{rgb}{.6,0,0}
+\definecolor{darkgreen}{rgb}{0,.6,0}
+\definecolor{red}{rgb}{.98,0,0}
+%
+%Standardmäßig Java vorher laden
+\lstloadlanguages{Java}
+\lstloadlanguages{SQL}
+% Standard-Layout für die Code-Umgebung (alle Sprachen)
+\lstset{%
+	language=SQL,
+ 	basicstyle=\footnotesize\ttfamily,
+	showspaces=false,
+	showtabs=false,
+	columns=fixed,
+	frame=none,
+	numberstyle=\tiny,
+	breaklines=true,
+	showstringspaces=false,
+	xleftmargin=0cm,
+	tabsize=4,
+	keywordstyle=\color{darkblue},
+	commentstyle=\color{darkred},
+	stringstyle=\color{darkgreen},
+	emph={i, t, a, f},
+	emphstyle=\color{red}
+}%
+
+%
+% Seitenranddefinitionen
+%   Links etwas mehr Rand als rechts, damit sich die Zettel später besser abheften lassen.
+\usepackage[a4paper]{geometry} 
+\geometry{a4paper,tmargin=1cm, bmargin=1cm, lmargin=1cm, rmargin=1cm, headheight=1em, headsep=1em, footskip=1cm} 
+
+\usepackage{multirow}
+\usepackage{rotating}
+%Fancy Table
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+%
+
+%
+% Deutsche Absatzformatierung: Zwischen zwei Absätzen eine Zeile (1em) frei und 
+% kein Einrücken der ersten Zeile
+%
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+\renewcommand{\arraystretch}{1.5}
+
+%
+% Beginn des Dokumentes
+%
+\begin{document}
+
+\textbf{Lage bei ungruppierten Daten}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{13em}p{13em}p{13em}p{13em}p{10em}}
+\textbf{Extremwerte}:\newline
+	Maximum und Minimum
+ &
+\textbf{Modalwert: $mode(x)$}\newline
+	Höchstes vorkommen eines Wertes
+ &
+\textbf{Median: $med(x)$}\newline
+	$x_{\frac{n+1}{2}} \mid n \ mod \ 2 = 1$\newline
+	$\left(x_{\frac{n}{2}} + x_{\frac{n}{2} + 1}\right) \div 2$, sonst
+ &
+\textbf{Quantile: $\tilde{x}_q$}\newline
+ $\tilde{x}_q = [\lfloor n\cdot q\rfloor +1]$, falls $\tilde{x}_q \notin \mathbb{N}$\newline
+ $\tilde{x}_q = \frac{[n \cdot q] + [n\cdot q + 1]}{2}$, sonst \newline
+ Beachte, zweiter Fall $\longrightarrow$ Mittelwert!
+ &
+\textbf{Hinges/Eights:} \newline
+	Tiefe(Med)=$(n+1)/2$ \newline
+	Tiefe(Hinges)= \newline $([Tiefe(Med)]+1)/2$
+	Falls nicht Ganzzahl, Mittelwert
+ \\
+\textbf{Arithmetisches Mittel: $\overline{x}$}\newline
+	$\frac{1}{n}\cdot \sum\limits_{i=1}^n x_i$
+ &
+\textbf{q-getrimmtes Mittel:}\newline
+	$\frac{1}{n - 2 \cdot \lfloor n\cdot q\rfloor}\cdot \sum\limits_{i=1+ \lfloor n\cdot q\rfloor}^{n-\lfloor n\cdot q\rfloor} x_i$
+ &
+\textbf{q-winsorisiertes Mittel:}\newline
+ $\frac{1}{n} \left(\sum\limits_{i=1}^{\lfloor n\cdot q\rfloor} x_{\lfloor n\cdot q\rfloor + 1} + \sum\limits_{i=1}^{\lfloor n\cdot q\rfloor} x_{n - \lfloor n\cdot q\rfloor -1} + \sum\limits_{i=1+ \lfloor n\cdot q\rfloor}^{n-\lfloor n\cdot q\rfloor} x_i \right)$
+ &
+ 
+ &
+\textbf{geometrisches Mittel: $\overline{x}_G$} \newline
+	$\sqrt[n]{\prod\limits_{i=1}^n x_i}$
+ \\ 
+\end{tabularx} 
+}
+
+\textbf{Stetige Daten}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{13em}p{13em}p{13em}p{13em}p{10em}}
+\textbf{Dichte:}\newline
+	$\frac{p_i}{b_m}$\newline
+	Wobei $m$ der Bereich ist und $b$ die breite.
+ &
+\textbf{Modalwert: $mode(x)$}\newline
+	Höchste Dichte
+ &
+\textbf{Median: $med(x)$ \& Quantile}\newline
+	$\tilde{x}_{q} = \dfrac{(q - p_{m-1}^k) \cdot b_m}{p_{m}^k - p_{m-1}^k}$
+ &
+\textbf{Arithmetisches Mittel: $\overline{x}$}\newline
+	$\sum\limits_{i=1}^{m} \dfrac{x_{i,o} + x_{i,u}}{2} \cdot p_i$
+ &
+ \\ 
+\end{tabularx} 
+}
+
+\normalsize
+\textbf{Streuung / (Merkmalswert-)Dispersion}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{13em}p{13em}p{13em}p{13em}p{10em}}
+\textbf{Spannweite: $sp$}\newline
+	Maximum $-$ Minimum\newline
+ &
+\textbf{Quantilabstand: $d_q$}\newline
+	$ \tilde{x}_{1-q} - \tilde{x}_{q}$
+ &
+\textbf{H-Spread $d_h$ / E-Spread $d_e$:}\newline
+	Differenz zwischen oberem und unterem Hinge / Eight	
+	
+ &
+\textbf{Mittlere Abweichung vom Median: $d_{\tilde{x}}$}\newline
+	$\frac{1}{n} \sum\limits^n_{i=1} \vert x_i - \tilde{x} \vert$ 
+ 
+ &
+\textbf{Median aller Distanzen aller Werte zum Median: $MAD$} \newline
+Med$(\vert x_i - \tilde{x} \vert)$ 
+\\
+\textbf{Varianz: $Var(x), s^2_n, s^2_{n-1}$}\newline
+$sq = \sum\limits_{i=1}^n (x_1 - \overline{x})^2 $ für Urliste \newline
+$sq = n\cdot\sum\limits_{i=1}^n (x_1 - \overline{x})^2 p_i $ für Verteilung \vspace{0.3em}\newline
+$s^2 = \frac{sq}{n}$
+&
+\textbf{Varianz f. Linearkombination}\newline
+$s^2_{a+b\cdot x}= b^2*s^2_x$\vspace{0.5em}\newline
+\textbf{Standardabweichung}\newline
+$Std(x) = \sqrt{s^2_n}, \sqrt{s^2_{n-1}}$\vspace{0.5em}\newline
+\textbf{Standardfehler}\newline
+$Std(\overline{x}) = Std(x) \div \sqrt{n}$
+&
+\textbf{Mittlere quad. Abweichung: $mqa$}\newline
+$mqa = s^2_{n-1} \cdot 2$\vspace{0.5em}\newline
+\textbf{Mittlere absolute Abweichung: $maa$}\newline
+$\frac{2}{n\cdot(n-1)}\sum\limits_{i=1}^{n-1} i\cdot (n-1) \cdot (x_{i+1} - x_i)$
+&
+\textbf{Variationskoeffizient:}\vspace{0.3em}\newline
+$v = \dfrac{s_x}{\overline{x}}$\vspace{0.5em}\newline
+\textbf{Quartilsdispersions-koeffizient:}\vspace{0.3em}\newline
+$v = \dfrac{\tilde{x}_.75 - \tilde{x}_.25}{\tilde{x}_.25 + \tilde{x}_.75}$
+&
+\textbf{Schiefe:}\vspace{0.4em}\newline
+$schiefe(x)$\vspace{0.4em}\newline$ = \dfrac{\overline{x} - \tilde{x}}{s_x}$
+
+\end{tabularx} 
+}
+\normalsize
+\textbf{Maßzahlen für Dispersion}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{15em}p{15em}p{15em}p{15em}}
+\textbf{Modaldispersion: $md$}\newline
+	$md = 1-max(p_i)$, mehrere erlaubt.
+ &
+\textbf{Qualitative Varianz: $qv$}\newline
+	$1 - \sum\limits_{i=1}^n p_i^2$
+ &
+\textbf{Entropie $h(x)$:}\newline
+	$h(x)_b = -\sum\limits_{i=1}^I p_i \cdot log_b(p_i)$
+&
+
+\begin{tabular}{|c|c|c|}
+\hline & $H_0$ akzept. & $H_0$ ablehnen  \\ 
+\hline $H_0$ richtig & $1-\alpha$ & $\alpha$ (1. Fehler)  \\ 
+\hline $H_a$ richtig & $\beta$ (2. Fehler) & $1-\beta$ \\ 
+\hline 
+\end{tabular} 
+\end{tabularx} 
+}
+\normalsize
+\textbf{Konfidenzintervall}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{15em}p{15em}p{15em}p{15em}}
+\textbf{bekanntes $\sigma$ und $µ_0$ oder $\overline{x}$}\newline
+	$o_{\alpha} = \overline{x} + z_{1-\frac{\alpha}{2}} \cdot \sigma_{\overline{x}}$\newline
+	$u_{\alpha} = \overline{x} - z_{1-\frac{\alpha}{2}} \cdot \sigma_{\overline{x}}$\newline
+	\textbf{Bestimmung des Intervalls}:\newline
+	\textbf{\texttt{GTR:}}\texttt{STAT $\rightarrow$ TESTS $\rightarrow$ ZInterval}\newline
+	Zweiseitig normal verfahren, $1-\alpha$ als \texttt{C-Level}. Einseitig $1-2\cdot\alpha$ als \texttt{C-Level} und nur eine Seite wählen.
+	
+ &
+\textbf{$µ$ bei unbekanntem $\sigma$}\newline
+	$o_{\alpha} = \overline{x} + t_{1-\frac{\alpha}{2}} \cdot s_{\overline{x}}$\newline
+	$u_{\alpha} = \overline{x} - t_{1-\frac{\alpha}{2}} \cdot s_{\overline{x}}$\newline
+	\textbf{Bestimmung des Intervalls}:\newline
+	\textbf{\texttt{GTR:}}\texttt{STAT $\rightarrow$ TESTS $\rightarrow$ TInterval}\newline
+	Zweiseitig normal verfahren, $1-\alpha$ als \texttt{C-Level}. Einseitig $1-2\cdot\alpha$ als \texttt{C-Level} und nur eine Seite wählen.
+ &
+\textbf{für Populationsanteil $\pi$:}\newline
+für $n>100$: $\hat{\sigma}_{\overline{x}} = \sqrt{\frac{\pi(1-\pi)}{n}}$\newline
+für $n<100$: $\hat{\sigma}_{\overline{x}} = \frac{\pi}{\sqrt{n}}$\newline
+Standardabweichung is aus \textbf{SP} abgeschätzt. Wird jetzt in der Formel links verwendet.
+&
+\textbf{für Bootstrap-Methode:}\newline
+Ziehen i-mal aus einer Stichprobe n Werte m.Z. \newline Für Ziehung $\rightarrow \overline{x} \& s_x$ als $\hat\theta$ in sortierter Liste. Dann ist \newline
+$\hat\theta_u = \hat\theta^*_{\frac{a}{2}}$, $\hat\theta_o = \hat\theta^*_{1-\frac{a}{2}}$\newline
+jeweils gesehen für $\overline{x} \& s_x$
+\end{tabularx} 
+}
+\normalsize
+\textbf{Hypothesentests}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{15em}p{15em}p{15em}p{15em}}
+\textbf{Mittelwerttest bei bekanntem $\sigma_x$ (Z-Zest)}\newline
+ Testwert: $Z = \dfrac{\overline{X}_n - µ_0}{\sigma_x} \sqrt{n}$\newline
+ \textbf{\texttt{GTR:}}\texttt{STAT $\rightarrow$ TESTS $\rightarrow$ Z-Test}\newline
+ Alle Werte eintragen, z ist der Testwert. Schauen ob in KB!\newline
+ \textbf{Kritischer Bereich:}\newline
+ Mit $µ_0$ im \texttt{GTR: ZInterval} ausfüllen.
+ 
+ &
+ \textbf{Mittelwerttest bei unbekanntem $\sigma_x$}\newline
+ Testwert: $T = \dfrac{\overline{X}_n - µ_0}{s_{n-1}} \sqrt{n}$\newline
+ \textbf{\texttt{GTR:}}\texttt{STAT $\rightarrow$ TESTS $\rightarrow$ T-Test}\newline
+ Alle Werte eintragen, t ist der Testwert. Schauen ob in KB!\newline
+ \textbf{Kritischer Bereich:}\newline
+ Mit $µ_0$ im \texttt{GTR: TInterval} ausfüllen.
+ &
+ \textbf{Binomialtest}\newline
+ $\alpha$:\newline \texttt{GTR $\rightarrow$ 2nd+DISTR $\rightarrow$ 1-binomcdf(n, p)}\newline
+ \textbf{KB:} Ablesen in der Liste!\newline
+ \textbf{Wahrscheinlichkeit} (z.B. weniger als 10 Brillenträger):\newline
+ \texttt{GTR $\rightarrow$ 2nd+DISTR $\rightarrow$ 1-binomcdf(n, p, i)}\newline
+ &
+\textbf{Anpassungstest für Verteilungen}\newline
+$LR_{\chi^2} = -2n \sum\limits_{i\in I} p_i\cdot ln\dfrac{\pi_i}{p_i}$\newline
+$P_{\chi^2} = n \sum\limits_{i\in I} \dfrac{(p_i - \pi_i)²}{\pi_i}$\newline
+\textbf{Freiheitsgrad $df$:}\newline
+$df = (row - 1) \cdot (col-1)$\newline
+\textbf{Kritischer Bereich:}\newline
+In Tabelle für $df$ ablesen. \newline
+Nullhypothese = $\pi_{ij} = \pi_{i.} \cdot \pi_{.j}$
+\end{tabularx} 
+}
+
+
+\normalsize
+\textbf{Verteilungen}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{15em}p{15em}p{15em}p{15em}}
+\textbf{Normalverteilung $NV(µ, \sigma^2)$}\newline
+ \textit{Wie groß ist n für Breite für gegebene} $NV(µ, \sigma^2)$?\newline
+ $n = \left(z\cdot \dfrac{2 \cdot \sigma }{\mbox{KI-Breite}}\right)^2$, mit\newline
+ $z$ aus der Standardnormalverteilung.\newline
+ \textbf{Wahrscheinlichkeiten:}\newline
+ $\Phi(-z)$, normalcdf mit $-z$ als upper value\& $-\infty$ für lower value\newline
+ \textbf{Für binomial} ist $z = \dfrac{x-µ}{\sigma}$\newline
+ \textbf{Für z.B. Mittelwert mit n} ist \newline $z = \dfrac{x-µ}{\frac{\sigma}{\sqrt{n}}}$\newline
+ &
+ \textbf{\textit{Beispiel:}} $NV(50,10\cdot10), n = 15$\newline
+ $\pi$, sodass mehr als 5 größer 70?\newline
+ 1. z-standardi.:
+ $z = \frac{70-50}{10} = 2$\newline
+ 2. $\pi = \Phi(-z) = 0.02275$\newline
+ 3. $P(k\geq 6)$ geht gegen 0.\newline
+ \texttt{binomcdf(15,1-0,02275,15-6)}\newline\newline
+ $\pi$, sodass genau 2 größer 80?\newline
+ 1. z-standardi.:
+ $z = \frac{80-50}{10} = 3$\newline
+ 2. $\pi = \Phi(-z) = 0.00135$\newline
+ 3. $P(k = 2) = 0.000188$.\newline\newline
+ \texttt{1} $-$
+ 	\texttt{bcdf(15,0,00135,2-1)}\newline
+ $-$ \texttt{bcdf(15,1-0,00135,15-(2+1))}
+ &
+ $\pi$, sodass $µ$ 55?\newline
+ 1. z-standi.:
+ $z = \frac{55-50}{10}\cdot \sqrt(10) = 1.58114$\newline
+ 2. $\pi = \Phi(-z) = 0.56923$\newline
+ \newline
+ &
+ \normalsize\textbf{Rechenregeln, Erwartungswert, Varianz}\newline\scriptsize
+ \textbf{Erwartungswert:}\newline
+ Zufallsvariable X, $\sum X \cdot P(X)$
+ \textbf{Varianz der Verteilung:}\newline
+ $Var(X) = \left(\sum X^2 \cdot P(X)\right) - \left(\sum X \cdot P(X)\right)^2$
+\end{tabularx} 
+}
+\newpage
+\begin{tabularx}{\textwidth}{p{43em}p{23em}}
+\begin{tabular}{p{1em} p{5em}|p{10em}|p{10em}|p{10em}|}
+\cline{3-5}  & & \multicolumn{3}{|c|}{Mindestskalenniveau y-Merkmal} \\ 
+\cline{3-5}  & & Nominal & Ordinal & Intervall \\ 
+\cline{1-5} \multirow{4}{4mm}{\begin{sideways}Mindestskalenniveau x-Merkmal $\, \, \,$\end{sideways}} & Nominal & Kreuztabellenanalysen, Chi-
+Quadrat, Nominale Korrelation
+(Chi-Quadrat-Normierungen,
+GOODMANs $\lambda$, KRUSKALs $\tau$,
+kappa), Analyse mit loglinearen
+und nominal-logistischen Modellen & Nichtparametrische Verfahren
+(Mediantest,
+WILCOXON-Tests, KRUSKAL-
+WALLIS-Test, FRIEDMAN-
+Varianzanalyse),
+Analyse mit ordinallogistischen
+Modellen & Vergleiche zweier Mittelwerte,
+Varianzanalyse,
+Vergleiche von Varianzen.
+Nichtparametrische
+Verfahren (bei Verletzung
+von Verteilungs-
+Voraussetzungen) \\ 
+\cline{2-5}  & Ordinal & Analyse mit nominallogistischen
+Modellen & Rangkorrelation
+(SPEARMANs $\tau$, KENDALLs
+$\rho$) & Mittelwerttests, Varianzanalyse \\ 
+\cline{2-5}  & Intervall & Analyse mit nominallogistischen
+Modellen (logistische
+Regression), Univariate
+Diskriminanzanalyse & Analyse mit ordinallogistischen
+Modellen & PEARSON-Korrelation,
+Regressionsanalyse \\ 
+\cline{1-5} 
+\end{tabular} 
+&
+
+
+\end{tabularx} 
+
+
+\textbf{Wissensfragen:}\\
+\scriptsize{
+\begin{tabularx}{\textwidth}{p{13em}p{13em}p{13em}p{13em}p{10em}}
+\textbf{Schätzer A, B, was bedeutet A ist effizienter als ?} $\rightarrow$ A hat geringere Varianz. \newline
+\textbf{Welche Verteilung hat irgendein Parameter?} $\rightarrow$ Parameter können nicht verteilt sein. \newline
+\textbf{Welchen Mangel hat der frequentistische Wahrscheinlichkeitsbegriff?} $\rightarrow$ Konvergenz nicht gewährleistet, zirkuläre Definition \newline 
+\textbf{Was sind die Annahmen beim Varianzanalysemodell, die für das Testen erforderlich sind?} $\rightarrow$ Homoskedastizität für alle Gruppen, y mind. intervallskaliert, y in jeder Gruppe normalverteilt \newline
+\textbf{Welche Möglichkeit gibt es, um die Macht des Test zu verbessern?} $\rightarrow$ Stichprobengröße erhöhen, $\alpha$ erhöhen, Hypothese anders formulieren, dass Unterschied zwischen $H_0$ und $H_a$ größer wird. \newline
+\textbf{Welche Wahrscheinlichkeitsbegriffe wurden vorgestellt?} $\rightarrow$ Klassischer, frequentischer, subjektivistischer, axiomatischer. \newline
+\textbf{Was besagt das Gesetz der großen Zahlen?} $\rightarrow$ Bei großen Stichproben liegt der Stichprobenmittelwert nahe des Populationsmittelwertes. \newline
+\textbf{Was sind die Annahmen beim Regressionsmodell?} $\rightarrow$ Homoskedastizität, statistisch unabhängig. \newline
+\textbf{Nennen sie zwei Unterschiede zwischen Fisher und Neyman/Pearson in Konzeption des Tests:} $\rightarrow$ F: $H_0$ niemals inhaltlich annehmbar. N/P: Fehler 1. und 2.Art. \newline 
+\textbf{Wann sind zwei diskrete Zufallsvariablen X und Y stochastisch unabhängig?} $\rightarrow$ P(X) = P(X | Y). \newline
+\textbf{Eigenschaften von Verteilung F(x):} $rightarrow$ Monoton nicht fallend, ganz links 0 und ganz rechts 1, Treppenfunktion. \newline
+\textbf{Bei welchen Analysen wurde Homoskedastizität vorausgesetzt?} $rightarrow$ Regressionsanalyse, Varianzanalyse, T-Test für unverbundene Stichproben \newline
+\textbf{Nennen sie die 3 Axiome von Kolmogoroff:} $\rightarrow$ Wahrscheinlichkeit zwischen 0 und 1, P(A oder B)= P(A) + P(B) falls sie disjunkt sind, Sicheres Ereignis: p=1. \newline
+
+ &
+\textbf{Aufgaben mit COV} \newline
+Regressionsgerade: $ b = \dfrac{Cov(x,y)}{Var(x)}$,
+$ a = \overline{y} - b \cdot \overline{x} $
+$y = a + bx$ \newline
+\textbf{Fehler-Regeln} \newline
+$F(o):$\newline  $ssq(total) = (n-1) \cdot Var(Y)$ \newline
+$F(m):$ \newline $  ssq(y,x) = (n-1) \cdot (Var(Y) - \dfrac{Cov(X,Y)^2}{Var(X)})$ \newline
+\textbf{Dete rminationskoeffizient 2.Art} \newline
+$r^2_{xy} = \dfrac{F(O) - F(M)}{F(O)}$ \newline $= \dfrac{Cov(X,Y)^2}{Var(X) \cdot Var(Y)}$ \newline
+\textbf{Konfidenzinterfall für $\alpha$} \newline
+$\hat{\alpha} \pm t_{0,95} (df) \cdot Stf(\alpha)$   mit \newline
+$Stf(\alpha) = s_e \cdot \sqrt{\frac{1}{n} + \frac{\overleftarrow{x}^2}{(n-1) \cdot s^2_x}}$ \newline
+$s_e = \sqrt{\frac{n-1}{n-2} \cdot (Var(Y) - \frac{Cov(X,Y)^2}{Var(X)}}$ \newline
+$ \hat{\alpha}$ entspricht dem $a$ aus der Reg-Geraden. \newline 
+$df = n-2$ (vielleicht) \newline 
+\newline
+\newline
+\textbf{PRU-Maß bei Verteilungstabelle (X,Y)}\newline
+x-bedingte Anteile in Tabelle aufstellen (Zeilenweiser Anteil) \newline
+sowie Gesamtanteil für eine Zeile am Gesamten \newline
+$Fehler_y(mit x) =  \sum p_i \cdot h_i(y),$ mit \newline
+$h_i(y) = - \sum_j p_{ij} \cdot ln(p_{ij})$
+$Fehler_y(ohne x) = - \sum_j p_{.j} ln(p_{.j})$, \newline
+also Spaltenrandanteile als Y-Werte. \newline
+$PRU = \frac{F(O) - F(M)}{F(O)}$, oder \newline
+einfacher PRU: $PRU = \frac{\frac{LR_{\chi^2}}{2 \pi}}{F(O)}$
+ \newline
+ \newline
+ 
+ &
+ \textbf{Tabelle mit mehreren Stichprobenzusammenfassungen bei vorhanden $µ, s, n$}
+\textbf{Determinationskoeffizient 1. Art \newline $\rho^2$:}
+$\dfrac{ssq(total) -ssq(within}{ssq(total)}$ \newline 
+$= \dfrac{ssq(between)}{ssq(within) + ssq(between)} $ \newline\newline
+$ssq(between) =$\newline$ (\sum n_i \overline{y}_i^2) - n \overline{y}^2$ mit \newline\newline
+$\overline{y} = \dfrac{\sum n_i \overline{y}_i^2}{n} $ \newline 
+$ssq(within)$ \newline $ = \sum_i (n_i -1) s_i^2$ \newline \newline
+Regel(mit X): $\hat{y}_{}ij = $ durchschnitt aller y-Mittelwerte
+Fehler(mit X): $= ssq(within)$ \newline
+$ssq(total) = ssq(between) + ssq(within)$ \newline
+\newline
+\textbf{Testen:}\newline
+KB bestimmen und schauen ob Testwert in KB.\newline
+TW: $F(df_1,df_2) = \frac{\eta^2}{1-\eta^2} \cdot \frac{df_2}{df_1}$ \newline
+$df_1 = I-1, df_2 = n-I$
+ &
+ 
+ &
+
+ \\
+
+ &
+
+ &
+
+ &
+ 
+ &
+
+ \\ 
+\end{tabularx} 
+}
+
+
+
+
+\end{document}

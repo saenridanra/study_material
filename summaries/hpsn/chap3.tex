@@ -1,0 +1,183 @@
+\chapter{Performance Evaluation} \label{CHAP:PERFEVAL}
+
+Scientifically sound work often requires an evaluation of data and results as well as generating reproducible results.
+
+This chapter covers things that need to be considered in order to create a scientifically sound evaluation.
+
+\section{Methods of Evaluation}
+
+\begin{itemize}
+    \item Measurement of a real system (hard without disturbing the system)
+    \item Simulation (Discrete Events, Simulated Time, Side effects are hard to simulate)
+    \item Analytical (Models and Numerical)
+\end{itemize}
+
+Some terms: \textbf{Load} - Different systems may have different workloads, which has significant impact on the results (also the patterns in which load appears).
+
+\textbf{Metric} - The measurement that is to be captured in the experiment. No general form of performance metrics - i.e., can be aggregations and so on. Different aggregations on performance measurements may be of interest, i.e.,
+
+\begin{itemize}
+    \item average
+    \item 95-percentile (order list, take element at 95\%)
+    \item worst case
+\end{itemize}
+
+for metrics like datarate, response time, energy consumption and many more.
+
+\textbf{Scientific Method for Performance Evaluation}
+
+\begin{enumerate}
+    \item Define Hypothesis
+    \item Design Experiment
+    \item Validate
+    \item Satisfied? No $\rightarrow$ repeat
+    \item Validation OK
+\end{enumerate}
+
+The process has to be \textbf{repeatable}, \textbf{independently verifiable} and \textbf{conclusions independent of point of view or bias}.
+
+\textbf{Goals of Performance Evaluation}
+
+\begin{itemize}
+    \item Comparison - Vary design parameters and compare their influence on the performance, also consider different design alternatives
+    \item System Dimensioning - Determining size of components
+\end{itemize}
+
+For comparison a well-defined work load model is needed, but the exact value of intensity is not needed. For system dimensioning on the other hand, an estimate of the intensity of work load is needed, which is why the results highly depend on that estimate.
+
+\subsection{Factors}
+
+Different factors have influence on the outcome of the result. As state load is one of them. There may be other factors (also known as parameters or predicator variables) to the experiment that may vary results and need to be considered.
+
+Some possible factors: Background Activity, Multiple Users, Network Activity (Operating System comparison).
+
+\textbf{Different System Designs for Factors}
+
+\begin{itemize}
+    \item Simple - Start typical configuration, vary parameters at a time and pick best, may give false conclusions
+    \item Full Factorial - Every possible combination of factors, can find every effect and interaction between factors, repetitions needed for validity and repeatability, cost of application is too high very quickly.
+    \item Fractional factorial - A fraction of all factor combinations, Calculate contributions of factors to total variance and choose, Disadvantage: Indicates interactions among some but not all factors;\\ For example $2^k$-design (only 2 possibilities for every factor) 
+\end{itemize}
+
+Additional notes (book):
+
+\begin{description}
+    \item[Hidden Factor Paradox] Hidden factors may invalidate results, for instance analyzing throughput / speed in network data and ignoring buffer sizes in use. Proper randomization may rid of some of the hidden factors.
+    \item[Simpson's Paradox] Performance metric is success probability. Example: Interested in whether a mobile will reach more than 1.5Mbit/s, hence success if this is the case. Ignoring buffer size, the example in the book shows that fast mobiles have a higher success rate. However, when considering the different buffer sizes (small, large) slow mobiles actually have a higher success probability (Book Page 7 to 8).
+\end{description}
+
+\subsection{Example SuperDHT}
+
+Data structure to find documents in a fast manner. Supposedly fast.. Documents are mapped to $[0,1]$ square node closest cartesian distance.
+
+Geographical basis: Nodes map longitude and latitude to $[0,1]$ square links.
+
+\textbf{Measurement:} Simple - Take one measurement, plot, look at conclusion. Problems?: Not reproducible and has no meaning.
+
+Advanced - Take $x_1, \dots, x_n$ independent measurements and obtain average $\mu$, plot, look at conclusion. Problem? (Mean is) Still not reproducible or significant, consider \textit{"Then there is the man who drowned crossing a stream with an average depth of six inches"}.
+
+Solution - Take the confidence interval as well. Reason: Simulations with random components require confidence intervals.
+
+Advanced 2 - $x_1, \dots , x_n$ measurements, test if it fits normal distribution (simple gaussian ..), if so apply t-test, else increase sample size $n$.
+
+\textbf{Central limit theorem} - \textit{Sum of a large number of independent observations from any distribution converges towards a normal distribution}.
+
+\subsection{Performance Patterns}
+
+Some traits are common among performance measurements and therefore should be known (\textit{performance patterns}). (not included in the lecture but in the book).
+
+\textbf{Bottlenecks} - many systems performances are dictated by their weakest components
+
+\textbf{Congestion Collapse} - Congestion appears when intensity of load exceed system capacity. Congestion is unavoidable, but congestion collapse should be avoided, which is reduction of system utility on increasing loads.
+
+\textbf{Competition Side Effect} - Performance of a user may have effects on that of other users on a system, a paradox when providing more resources makes performance for users worse. Cause for this is, increasing resources for some users will take away resources for competing users, worsening their performance.
+
+\textbf{Latent Congestion Collapse} - Large complex systems may have several bottlenecks. Removing a bottleneck (by adding more resources) may have a contradictory effect and lead to congestion collapse.
+
+\subsection{Check-list}
+
+The book states a check-list of its own for performance evaluation which may be worth remembering:
+
+\begin{enumerate}
+    \item Define goal
+    \item Identify factors
+    \item Define metrics
+    \item Define offered load
+    \item Know your bottlenecks
+    \item Know your system well
+\end{enumerate}
+
+\textbf{Scientific method check list:}
+
+\begin{enumerate}
+    \item Hypothesis, Design Experiments, Validate until validation is fine
+    \item Quantify accuracy of your results (95-percentile etc.)
+    \item Make findings reproducible, define assumptions..
+    \item Remove what can be removed
+\end{enumerate}
+
+\section{Analysis and Comparison}
+
+\subsection{Students-t test}
+
+Check whether a small set of samples is likely to originate from a normal distribution. Need to specify confidence intervals (for one sided tests 5\% means 95\% of the data is within the distribution, for two sided 5\% has the same meaning, but 2.5\% on the left and 2.5\% on the right).
+
+\subsection{Q-Q Plot}
+
+In some cases data that may seem to have a correlation may not actually have one. The Q-Q-plot calculates a scatter plot over the percentiles of data for multiple dimensions. It does not try to show correlation between data, but rather correlations between their distributions, i.e. a linear line along the diagonal shows high correlation between the distributions of the data.
+
+\subsection{Distributions}
+
+\textbf{Uniform} - given a set of attributes and samples, a sample has the same probability to have a certain attribute for all attributes.
+
+\textbf{Gaussian} - Also called bell curve, based on the standard deviation and mean of data. Usually the "95\%" include two times the standard deviation, the rest is outside and unlikely to appear within samples.
+
+\subsection{Models}
+
+Models are used to provide simplified explanations of observations of real data. For instance, regressions are models into which data is fitted. For this least squares is widely used for error minimization. In this case, we implicitly assume that error terms are gaussian with equal variance, which may be false. An alternative is to use Laplacian distribution.
+
+\textbf{iid} - Independence assumption, i.e., "Independent and identically distributed" - assumption is a property of a model and not of the data itself. When working with models, we often assume independence and identical distribution, although this may not be the case.
+
+\textbf{Regression} - a model of a curve that is estimated over a set of samples.
+Statistical tests are used to verify whether the calculated model is actually good.
+
+Gneral formular for linear regression $y = a + bx$, then the regression can be calculated using $$b = \dfrac{\sum_{n=1}^{N} (x_n - \overline{x})(y_n - \overline{y})}{\sum_{n=1}^{N} (x_n - \overline{x})^2}$$ and $a = \overline{y} - b \overline{x}$.
+
+In general you can have more predictor variables, extending the formular by those variables..
+
+\subsection{Correlation and Causation}
+
+Data that seems to have a correlation may not always have a causation. A simple example is the comparison of deaths over 10 years by any means correlated to beared growth of individuals. That data may have a correlation, but it is highly unlikely that there is a causation as well.
+
+\subsection{Interpolation and Sampling}
+
+When sampling data at a certain frequency/rate, the sampling has to be performed at twice the frequency/rate of the highest frequency/rate. Although, there are cases where this is not the case, in general aliasing is introduced into the sampled data set.
+
+\section{Conclusions}
+
+Awareness of what constitutes you scientific experiments, whether simulation, measurement or analytical conclusions have to be structured, reproducible and so on...
+
+Good foundation in statistics and performance evaluation is a requirement for good quality analysis in networks and high performance systems.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

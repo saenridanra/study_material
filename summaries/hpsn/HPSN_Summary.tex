@@ -1,0 +1,157 @@
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%% Übungsblattvorlage					  %
+%%% written by Andreas Rain				  %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+
+\documentclass[fleqn, oneside, 10pt, titlepage]{report}
+%
+%Zeichensatz UTF-8 und T1-Zeichensatz
+\usepackage[utf8x]{inputenc} 
+\usepackage[T1]{fontenc}
+%\newcommand{\changefont}[3]{\fontfamily{#1}\fontseries{#2}\fontshape{#3}\selectfont}
+% 
+
+%Silbentrennung nach neuer deutscher Rechtschreibung
+%\usepackage[ngerman]{babel} % Neue Rechtschreibung
+%
+%Einige Mathe-Symbole aus AMS-LaTeX
+\usepackage{amsmath,amssymb,euscript}
+%
+% schönere Aufzählungen
+\usepackage{enumerate}
+%
+% Für Bilder 
+\usepackage{graphicx}
+\usepackage{float} % lädt das Paket zur Verwendung von zusätzlichen Positionsbefehlen
+
+%Graue box
+\usepackage{framed}
+\usepackage{xcolor}
+
+\definecolor{MyBoxColor}{rgb}{0.9,0.9,0.9}
+\newenvironment{shadedSmaller}{
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{MyBoxColor}}
+  \MakeFramed {\advance\hsize-2\width\FrameRestore}}
+{\endMakeFramed}
+
+\newenvironment{shadedSmallerPadding}{
+  \def\FrameCommand{\fboxsep=0.3cm \colorbox{MyBoxColor}}
+  \MakeFramed {\advance\hsize-1.1\width\FrameRestore}}
+{\endMakeFramed}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Standard Font auf Überschriften übernehmen.
+%\usepackage{sectsty}
+%\sectionfont{\fontfamily{pag}\fontseries{b}\fontsize{13pt}{20pt}\selectfont}
+%\subsectionfont{\fontfamily{pag}\fontseries{b}\fontsize{11pt}{20pt}\selectfont}
+%\subsubsectionfont{\fontfamily{pag}\fontseries{b}\fontsize{10pt}{20pt}\selectfont}
+%\paragraphfont{\fontfamily{pag}\fontseries{b}\fontsize{11pt}{20pt}\selectfont}
+%\subparagraphfont{\fontfamily{pag}\fontseries{b}\fontsize{10pt}{20pt}\selectfont}
+
+%
+% Farben und die Code-Umgebung einbinden
+%
+\usepackage{listings, color}
+%
+% Ein paar Standardfarben
+\definecolor{darkblue}{rgb}{0,0,.6}
+\definecolor{darkred}{rgb}{.6,0,0}
+\definecolor{darkgreen}{rgb}{0,.6,0}
+\definecolor{red}{rgb}{.98,0,0}
+%
+%Standardmäßig Java vorher laden
+\lstloadlanguages{Java}
+\lstloadlanguages{SQL}
+% Standard-Layout für die Code-Umgebung (alle Sprachen)
+\lstset{%
+	language=SQL,
+ 	basicstyle=\footnotesize\ttfamily,
+	showspaces=false,
+	showtabs=false,
+	columns=fixed,
+	frame=none,
+	numberstyle=\tiny,
+	breaklines=true,
+	showstringspaces=false,
+	xleftmargin=0cm,
+	tabsize=4,
+	keywordstyle=\color{darkblue},
+	commentstyle=\color{darkred},
+	stringstyle=\color{darkgreen},
+	emph={i, t, a, f},
+	emphstyle=\color{red}
+}%
+
+%
+% Seitenranddefinitionen
+%   Links etwas mehr Rand als rechts, damit sich die Zettel später besser abheften lassen.
+\usepackage[a4paper]{geometry} 
+\geometry{a4paper,tmargin=2.5cm, bmargin=3cm, lmargin=3cm, rmargin=3cm, headheight=3em, headsep=1em, footskip=1cm} 
+
+%
+% Kopf- und Fußzeilendefinition
+%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+%
+
+
+% Oben rechts die Namen der Teilnehmer der Gruppe
+%
+%Oben Links das Fach und darunter die Nummer des Übungsblattes
+\fancyhead[L]{\textcolor{gray}{HPSN Summary}}
+%
+% Die Übungsgruppe oben in der Mitte (momentan auskommentiert)
+%\fancyhead[C]{Gruppe 2}
+%
+%Fußzeile mittig die Seitenzahl
+\fancyfoot[C]{\textcolor{gray}{Seite \thepage}}
+%
+% Fußzeile links das aktuelle Datum (alternativ kann hier der Abgabetag eingetragen werden)
+\fancyfoot[L]{\textcolor{gray}{\today}}
+
+%Fancy Table
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+%
+
+%
+% Deutsche Absatzformatierung: Zwischen zwei Absätzen eine Zeile (1em) frei und 
+% kein Einrücken der ersten Zeile
+%
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+
+%Titelseite
+\title{\Large HPSN Summary}
+
+
+%
+% Beginn des Dokumentes
+%
+\begin{document}
+\maketitle %Ausgabe der Titelseite 
+\newpage
+\tableofcontents
+\newpage
+
+\include{chap1}
+\include{chap2}
+\include{chap3}
+\include{chap4}
+\include{chap5}
+\include{chap6}
+\include{chap7}
+\include{chap8}
+\include{chap9}
+\include{chap10}
+
+
+\end{document}
